@@ -9,9 +9,22 @@ import SwiftUI
 
 @main
 struct LiveCoinPriceApp: App {
+    
+    let coinCapService = CoinPriceService()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView{
+                ContentView(viewModel: CoinListViewModel(service: coinCapService))
+                    .onAppear {
+                        setupCoinCapService()
+                    }
+            }
         }
+    }
+    
+    func setupCoinCapService() {
+        coinCapService.connect()
+        coinCapService.startMonitorNetworkConnectivity()
     }
 }

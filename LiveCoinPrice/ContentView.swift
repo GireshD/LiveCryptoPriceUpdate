@@ -6,16 +6,40 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
+    
+    @ObservedObject var viewModel: CoinListViewModel
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        NavigationView{
+           
+            List{
+                ForEach(viewModel.coins){ coin in
+                    HStack {
+                        Text(coin.name).font(.headline)
+                        Spacer()
+                        Text(viewModel.valueText(for: coin.value))
+                            .frame(alignment: .trailing)
+                            .font(.body)
+                        
+                        
+                    }
+                }
+            }
+            .listStyle(PlainListStyle())
+            
+        }
+        .navigationTitle("Coin Live Price")
+        .onAppear{
+            viewModel.subscribeToService()
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(viewModel: CoinListViewModel())
     }
 }
